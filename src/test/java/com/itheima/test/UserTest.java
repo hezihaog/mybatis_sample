@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * MyBatis的增删查改
+ * 用户表的增删查改
  */
-public class MyBatisTest2 {
+public class UserTest {
     private InputStream inputStream;
     private SqlSession session;
     private IUserDao userDao;
@@ -55,6 +55,14 @@ public class MyBatisTest2 {
     public void testFindAll() {
         //5.使用代理对象执行方法
         List<User> resultList = userDao.findAll();
+        for (User user : resultList) {
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void testFindAllLazy() {
+        List<User> resultList = userDao.findAllLazy();
         for (User user : resultList) {
             System.out.println(user);
         }

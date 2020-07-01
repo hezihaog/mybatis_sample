@@ -32,6 +32,22 @@
         </collection>
     </resultMap>
 
+    <!-- 支持懒加载的 -->
+    <resultMap id="userAccountLazyMap" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="address" column="address"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <!--
+        配置User对象中的accounts集合的映射
+            property属性：指定集合属性名称
+            ofType属性：指定集合中的元素的类型
+        -->
+        <collection property="accounts" ofType="account" select="com.itheima.dao.IAccountDao.findAccountByUid"
+                    column="id"/>
+    </resultMap>
+
     <!-- 定义用户和角色的映射 -->
     <resultMap id="userRoleMap" type="user">
         <id property="id" column="id"/>
@@ -55,6 +71,11 @@
     <!-- 配置查询所有 -->
     <select id="findAll" resultMap="userAccountMap">
         select * from user u left join account a on u.id = a.uid
+    </select>
+
+    <!-- 查询所有，并懒加载用户下的所有账户 -->
+    <select id="findAllLazy" resultMap="userAccountLazyMap">
+        select * from user
     </select>
 
     <!--    <select id="findAll" resultType="com.itheima.domain.User">-->

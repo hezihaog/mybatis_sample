@@ -63,4 +63,15 @@ public class AccountTest {
             System.out.println(account);
         }
     }
+
+    /**
+     * 测试一对一的懒加载
+     */
+    @Test
+    public void testFindAllAccountLazy() {
+        List<Account> resultList = accountDao.findAllAccountLazy();
+        for (Account account : resultList) {
+            System.out.println(account);
+        }
+    }
 }

@@ -17,6 +17,11 @@ public interface IUserDao {
     List<User> findAll();
 
     /**
+     * 查询所有用户，懒加载，获取到用户下的所有账户信息
+     */
+    List<User> findAllLazy();
+
+    /**
      * 保存用户
      */
     int saveUser(User user);

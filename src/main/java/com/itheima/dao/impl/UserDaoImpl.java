@@ -26,6 +26,10 @@ public class UserDaoImpl implements IUserDao {
         return resultList;
     }
 
+    public List<User> findAllLazy() {
+        return null;
+    }
+
     public int saveUser(User user) {
         SqlSession session = factory.openSession();
         session.insert("com.itheima.dao.IUserDao.saveUser", user);

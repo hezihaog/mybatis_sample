@@ -4,6 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <!-- MyBatis的主配置 -->
 <configuration>
+    <!-- 配置延迟加载策略 -->
+<!--    <settings>-->
+<!--        &lt;!&ndash; 开启MyBatis支持延迟加载 &ndash;&gt;-->
+<!--        <setting name="lazyLoadingEnabled" value="true"/>-->
+<!--        &lt;!&ndash; 将积极加载改为消息加载，即按需加载 &ndash;&gt;-->
+<!--        <setting name="aggressiveLazyLoading" value="false"/>-->
+<!--    </settings>-->
+
     <!--
         引入外部数据库配置信息
             resource属性：指定配置文件的位置，是按照类路径的写法来写，并且必须存在于类路径下
@@ -49,7 +57,7 @@
     -->
     <mappers>
         <!-- xml方式，配置resource属性，指定文件路径 -->
-<!--        <mapper resource="com/itheima/dao/IUserDao.xml"/>-->
+        <!--        <mapper resource="com/itheima/dao/IUserDao.xml"/>-->
         <!-- 注解方式，配置class属性，指定类的全限定类名 -->
         <!--        <mapper class="com.itheima.dao.IUserDao"/>-->
 

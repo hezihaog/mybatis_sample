@@ -25,12 +25,34 @@
         </association>
     </resultMap>
 
+    <!-- 支持懒加载的resultMap -->
+    <resultMap id="accountUserLazyMap" type="account">
+        <id property="id" column="aid"/>
+        <result property="uid" column="uid"/>
+        <result property="money" column="money"/>
+        <!--
+            懒加载配置
+            select属性：指定查询用户信息方法的唯一标识
+        -->
+        <association property="user" column="uid" javaType="user" select="com.itheima.dao.IUserDao.findById"/>
+    </resultMap>
+
     <!-- 配置查询所有 -->
     <select id="findAll" resultType="account">
         select * from account
     </select>
 
+    <!-- 没有懒加载处理，全部立即查询 -->
     <select id="findAllAccount" resultMap="accountUserMap">
-        select a.*,u.username,u.address from account a, user u where u.id = a.uid;
+            select a.*,u.username,u.address from account a, user u where u.id = a.uid;
+    </select>
+
+    <!-- 有懒加载处理 -->
+    <select id="findAllAccountLazy" resultMap="accountUserLazyMap">
+        select * from account
+    </select>
+
+    <select id="findAccountByUid" resultType="com.itheima.domain.Account" parameterType="int">
+        select * from account where uid = #{id}
     </select>
 </mapper>
