@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class MyBatisTest2 {
         //2.创建工厂
         SqlSessionFactory factory = new SqlSessionFactoryBuilder()
                 .build(inputStream);
-        //3.使用工厂生产SqlSession对象
+        //3.使用工厂生产SqlSession对象，autoCommit设置为true时，为自动提交事务，默认为false，一般我们都手动控制事务
+//        session = factory.openSession(true);
         session = factory.openSession();
         //4.使用SqlSession创建Dao接口的代理对象
         userDao = session.getMapper(IUserDao.class);
@@ -39,7 +41,7 @@ public class MyBatisTest2 {
 
     @After
     public void destroy() throws IOException {
-        //注意，需要提交事务
+        //注意，如果openSession()，没有传autoCommit参数，或者设置为false，则需要自己手动提交事务
         session.commit();
         //6.释放资源
         session.close();
@@ -50,7 +52,7 @@ public class MyBatisTest2 {
      * 测试查找
      */
     @Test
-    public void testFind() {
+    public void testFindAll() {
         //5.使用代理对象执行方法
         List<User> resultList = userDao.findAll();
         for (User user : resultList) {
@@ -141,6 +143,52 @@ public class MyBatisTest2 {
         List<User> users = userDao.findUserByVo(vo);
         for (User model : users) {
             System.out.println(model);
+        }
+    }
+
+    /**
+     * 测试多种条件查询
+     */
+    @Test
+    public void testFindUserByCondition() {
+        User user = new User();
+        user.setUsername("老王");
+        user.setSex("男");
+        List<User> resultList = userDao.findUserByCondition(user);
+        if (resultList.isEmpty()) {
+            System.out.println("没有查询到数据");
+            return;
+        }
+        for (User model : resultList) {
+            System.out.println(model);
+        }
+    }
+
+    /**
+     * 测试动态sql，foreach连接in
+     */
+    @Test
+    public void testFindInIds() {
+        QueryVO vo = new QueryVO();
+        List<Integer> ids = new ArrayList<Integer>();
+        ids.add(41);
+        ids.add(42);
+        ids.add(43);
+        vo.setIds(ids);
+        List<User> resultList = userDao.findUserInIds(vo);
+        for (User user : resultList) {
+            System.out.println(user);
+        }
+    }
+
+    /**
+     * 测试多对多关系查询
+     */
+    @Test
+    public void testFindUserRoles() {
+        List<User> resultList = userDao.findUserRoles();
+        for (User user : resultList) {
+            System.out.println(user);
         }
     }
 }

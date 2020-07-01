@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace，命名空间必须和Dao接口一样 -->
+<mapper namespace="com.itheima.dao.IAccountDao">
+
+    <!-- 定义封装Account和User的resultMap -->
+    <resultMap id="accountUserMap" type="account">
+        <id property="id" column="aid"/>
+        <result property="uid" column="uid"/>
+        <result property="money" column="money"/>
+        <!--
+            一对一的关系映射，配置封装的User的内容
+            1.property属性：表示封装User信息到Account的哪个属性上
+            2.column属性：表示user和account关联的外键属性
+            3.javaType属性：封装的数据类型
+        -->
+        <association property="user" column="uid" javaType="user">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <result property="address" column="address"/>
+            <result property="sex" column="sex"/>
+            <result property="birthday" column="birthday"/>
+        </association>
+    </resultMap>
+
+    <!-- 配置查询所有 -->
+    <select id="findAll" resultType="account">
+        select * from account
+    </select>
+
+    <select id="findAllAccount" resultMap="accountUserMap">
+        select a.*,u.username,u.address from account a, user u where u.id = a.uid;
+    </select>
+</mapper>

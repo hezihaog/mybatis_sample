@@ -93,4 +93,16 @@ public class UserDaoImpl implements IUserDao {
         session.close();
         return userList;
     }
+
+    public List<User> findUserByCondition(User user) {
+        return null;
+    }
+
+    public List<User> findUserInIds(QueryVO vo) {
+        return null;
+    }
+
+    public List<User> findUserRoles() {
+        return null;
+    }
 }

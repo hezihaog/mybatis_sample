@@ -13,14 +13,53 @@
         <result property="username" column="username"/>
     </resultMap>
 
+    <!-- 定义用户和账户的映射 -->
+    <resultMap id="userAccountMap" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="address" column="address"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <!--
+        配置User对象中的accounts集合的映射
+            property属性：指定集合属性名称
+            ofType属性：指定集合中的元素的类型
+        -->
+        <collection property="accounts" ofType="account">
+            <id property="id" column="aid"/>
+            <result property="uid" column="uid"/>
+            <result property="money" column="money"/>
+        </collection>
+    </resultMap>
+
+    <!-- 定义用户和角色的映射 -->
+    <resultMap id="userRoleMap" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="address" column="address"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <!-- 配置角色的属性 -->
+        <collection property="roles" ofType="role">
+            <id property="roleId" column="aid"/>
+            <result property="roleName" column="role_name"/>
+            <result property="roleDesc" column="role_desc"/>
+        </collection>
+    </resultMap>
+
+    <!-- 抽取基础sql -->
+    <sql id="defaultUser">
+        select * from user
+    </sql>
+
     <!-- 配置查询所有 -->
-    <select id="findAll" resultMap="userMap">
-        select * from user;
+    <select id="findAll" resultMap="userAccountMap">
+        select * from user u left join account a on u.id = a.uid
     </select>
 
-<!--    <select id="findAll" resultType="com.itheima.domain.User">-->
-<!--        select * from user;-->
-<!--    </select>-->
+    <!--    <select id="findAll" resultType="com.itheima.domain.User">-->
+    <!--        select * from user;-->
+    <!--    </select>-->
 
     <insert id="saveUser" parameterType="com.itheima.domain.User">
         <!-- 配置插入数据后，获取插入数据的id -->
@@ -36,16 +75,19 @@
 
     <!-- 只有1个参数，占位符中的名称写什么都可以 -->
     <delete id="deleteUser" parameterType="java.lang.Integer">
-        delete from user where id = #{uid};
+        <include refid="defaultUser"/>
+        where id = #{uid};
     </delete>
 
     <select id="findById" parameterType="java.lang.Integer" resultType="com.itheima.domain.User">
-        select * from user where id = #{userId}
+        <include refid="defaultUser"/>
+        where id = #{userId}
     </select>
 
     <select id="findByName" parameterType="java.lang.String" resultType="com.itheima.domain.User">
         <!-- select * from user where username like #{name} -->
-        select * from user where username like '%${value}%'
+        <include refid="defaultUser"/>
+        where username like '%${value}%'
     </select>
 
     <select id="findTotal" resultType="java.lang.Integer">
@@ -53,6 +95,37 @@
     </select>
 
     <select id="findUserByVo" parameterType="com.itheima.domain.QueryVO" resultType="com.itheima.domain.User">
-        select * from user where username like #{user.username}
+        <include refid="defaultUser"/>
+        where username like #{user.username}
+    </select>
+
+    <select id="findUserByCondition" parameterType="user" resultMap="userMap">
+        <include refid="defaultUser"/>
+        <where>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserInIds" resultType="user">
+        <include refid="defaultUser"/>
+        <where>
+            <if test="ids != null and ids.size > 0">
+                <foreach collection="ids" open="and id in(" close=")" separator="," item="uid">
+                    #{uid}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserRoles" resultMap="userRoleMap">
+        SELECT u.*, r.id as rid, r.role_name, r.role_desc
+        FROM user u
+        LEFT JOIN user_role ur on u.id = ur.uid
+        LEFT JOIN role r on r.id = ur.rid
     </select>
 </mapper>

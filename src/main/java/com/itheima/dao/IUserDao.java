@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IUserDao {
     /**
-     * 查询所有用户
+     * 查询所有用户，同时获取到用户下的所有账户信息
      */
 //    @Select("select * from user")
     List<User> findAll();
@@ -52,4 +52,21 @@ public interface IUserDao {
      * 根据QueryVO查询用户信息
      */
     List<User> findUserByVo(QueryVO vo);
+
+    /**
+     * 根据条件查询用户信息
+     *
+     * @param user 查询条件
+     */
+    List<User> findUserByCondition(User user);
+
+    /**
+     * 根据QueryVO中的id集合，查询多个用户信息
+     */
+    List<User> findUserInIds(QueryVO vo);
+
+    /**
+     * 查询所有用户信息和角色信息
+     */
+    List<User> findUserRoles();
 }
