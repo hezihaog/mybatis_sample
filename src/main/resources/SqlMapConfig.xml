@@ -4,19 +4,41 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <!-- MyBatis的主配置 -->
 <configuration>
+    <!--
+        引入外部数据库配置信息
+            resource属性：指定配置文件的位置，是按照类路径的写法来写，并且必须存在于类路径下
+            url属性：是按照按照Url的写法来写
+    -->
+    <properties resource="jdbcConfig.properties"/>
+
+    <typeAliases>
+        <!-- typeAlias，配置别名，当指定了别名时，就不再区分大小写 -->
+        <typeAlias type="com.itheima.domain.User" alias="user"/>
+        <!-- package，上面使用typeAlias标签一个个去配，很麻烦，而package标签可以指定一个包，为包里的所有实体都配置别名，不再区分大小写 -->
+        <package name="com.itheima.domain"/>
+    </typeAliases>
+
     <!-- 配置环境 -->
     <environments default="mysql">
         <!-- MySql环境 -->
         <environment id="mysql">
             <!-- 配置事务的类型 -->
             <transactionManager type="JDBC"/>
-            <!-- 配置数据源（连接池） -->
+            <!--
+                配置数据源（连接池）
+                    种类：
+                        1.POOLED，采用传统的javax.sql.DataSource规范中的连接池，mybatis中有针对规范的实现
+                        2.UNPOOLED，采用传统获取连接的概念，虽然也实现了javax.sql.DataSource接口，但没有池的概念，所以每次获取连接都是新的，并没有复用
+                        3.JNDI，采用服务器提供的JNDI技术实现，不同的服务器，获取到的实现都不一样
+                            注意：如果不是web工程或maven工程，是不能使用的！
+                            项目中使用的是Tomcat服务器，采用的连接池就是dbcp连接池
+            -->
             <dataSource type="POOLED">
                 <!-- 配置连接数据库的4个基本信息 -->
-                <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/eesy_mybatis"/>
-                <property name="username" value="root"/>
-                <property name="password" value="hezihao123"/>
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
             </dataSource>
         </environment>
     </environments>
@@ -27,8 +49,11 @@
     -->
     <mappers>
         <!-- xml方式，配置resource属性，指定文件路径 -->
-        <mapper resource="com/itheima/dao/IUserDao.xml"/>
+<!--        <mapper resource="com/itheima/dao/IUserDao.xml"/>-->
         <!-- 注解方式，配置class属性，指定类的全限定类名 -->
         <!--        <mapper class="com.itheima.dao.IUserDao"/>-->
+
+        <!-- package属性，用于指定Dao层接口所在的包，当指定了之后，就不需要再写上面的mapper标签和resource或class属性 -->
+        <package name="com.itheima.dao"/>
     </mappers>
 </configuration>

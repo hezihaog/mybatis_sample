@@ -4,8 +4,55 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace，命名空间必须和Dao接口一样 -->
 <mapper namespace="com.itheima.dao.IUserDao">
+    <!-- 配置实体类和数据库字段的对应关系 -->
+    <resultMap id="userMap" type="user">
+        <!-- 主键字段对应 -->
+        <id property="id" column="id"/>
+        <!-- 非主键字段对应，这里嫌麻烦，就不弄了，知道意思就好 -->
+        <!-- <result property="username" column="userName"/> -->
+        <result property="username" column="username"/>
+    </resultMap>
+
     <!-- 配置查询所有 -->
-    <select id="findAll" resultType="com.itheima.domain.User">
+    <select id="findAll" resultMap="userMap">
         select * from user;
+    </select>
+
+<!--    <select id="findAll" resultType="com.itheima.domain.User">-->
+<!--        select * from user;-->
+<!--    </select>-->
+
+    <insert id="saveUser" parameterType="com.itheima.domain.User">
+        <!-- 配置插入数据后，获取插入数据的id -->
+        <selectKey keyProperty="id" keyColumn="id" resultType="int" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into user(username, address, sex, birthday) values(#{username}, #{address}, #{sex}, #{birthday});
+    </insert>
+
+    <update id="updateUser" parameterType="com.itheima.domain.User">
+        update user set username = #{username}, address = #{address},sex = #{sex}, birthday = #{birthday} where id = #{id};
+    </update>
+
+    <!-- 只有1个参数，占位符中的名称写什么都可以 -->
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        delete from user where id = #{uid};
+    </delete>
+
+    <select id="findById" parameterType="java.lang.Integer" resultType="com.itheima.domain.User">
+        select * from user where id = #{userId}
+    </select>
+
+    <select id="findByName" parameterType="java.lang.String" resultType="com.itheima.domain.User">
+        <!-- select * from user where username like #{name} -->
+        select * from user where username like '%${value}%'
+    </select>
+
+    <select id="findTotal" resultType="java.lang.Integer">
+        select count(id) from user;
+    </select>
+
+    <select id="findUserByVo" parameterType="com.itheima.domain.QueryVO" resultType="com.itheima.domain.User">
+        select * from user where username like #{user.username}
     </select>
 </mapper>
