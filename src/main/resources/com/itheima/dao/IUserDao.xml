@@ -100,7 +100,10 @@
         where id = #{uid};
     </delete>
 
-    <select id="findById" parameterType="java.lang.Integer" resultType="com.itheima.domain.User">
+    <!-- cache标签，表示开启User支持二级缓存 -->
+    <cache/>
+    <!-- useCache="true"，表示该方法的操作，使用二级缓存 -->
+    <select id="findById" useCache="true" parameterType="java.lang.Integer" resultType="com.itheima.domain.User">
         <include refid="defaultUser"/>
         where id = #{userId}
     </select>

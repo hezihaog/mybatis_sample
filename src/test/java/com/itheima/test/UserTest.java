@@ -22,6 +22,7 @@ import java.util.List;
  */
 public class UserTest {
     private InputStream inputStream;
+    private SqlSessionFactory factory;
     private SqlSession session;
     private IUserDao userDao;
 
@@ -30,7 +31,7 @@ public class UserTest {
         //1.读取配置文件
         inputStream = Resources.getResourceAsStream("SqlMapConfig.xml");
         //2.创建工厂
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder()
+        factory = new SqlSessionFactoryBuilder()
                 .build(inputStream);
         //3.使用工厂生产SqlSession对象，autoCommit设置为true时，为自动提交事务，默认为false，一般我们都手动控制事务
 //        session = factory.openSession(true);
@@ -198,5 +199,45 @@ public class UserTest {
         for (User user : resultList) {
             System.out.println(user);
         }
+    }
+
+    /**
+     * 测试MayBatis的一级缓存，一级缓存指的是同一个SqlSession内查询时，可以复用缓存，而不需要重复查询
+     *      注意：一级缓存区域，存放的是对象，所以查询出来的模型对象是同一个
+     */
+    @Test
+    public void testFirstLevelCache() {
+        User user1 = userDao.findById(41);
+        System.out.println(user1);
+
+        //session关闭，缓存就失效了
+//        session.close();
+//        session = factory.openSession();
+//        userDao = session.getMapper(IUserDao.class);
+
+        //获取清空缓存即可
+//        session.clearCache();
+
+        User user2 = userDao.findById(41);
+        System.out.println(user2);
+        System.out.println(user1 == user2);
+    }
+
+    /**
+     * 测试同步缓存
+     */
+    @Test
+    public void testClearCache() {
+        User user1 = userDao.findById(41);
+        System.out.println(user1);
+
+        //更新用户信息，MyBatis调用SqlSession的修改、添加、删除、commit()、close()等方法时，就会清空一级缓存
+        user1.setUsername("update user");
+        user1.setAddress("北京市海淀区");
+        userDao.updateUser(user1);
+
+        User user2 = userDao.findById(41);
+        System.out.println(user2);
+        System.out.println(user1 == user2);
     }
 }

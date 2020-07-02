@@ -10,6 +10,8 @@
 <!--        <setting name="lazyLoadingEnabled" value="true"/>-->
 <!--        &lt;!&ndash; 将积极加载改为消息加载，即按需加载 &ndash;&gt;-->
 <!--        <setting name="aggressiveLazyLoading" value="false"/>-->
+<!--        &lt;!&ndash; 开启二级缓存支持，默认为true，不配置也行 &ndash;&gt;-->
+<!--        <setting name="cacheEnable" value="true"/>-->
 <!--    </settings>-->
 
     <!--
