@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- MyBatis的主配置 -->
+<configuration>
+    <!-- 配置延迟加载策略 -->
+    <!--    <settings>-->
+    <!--        &lt;!&ndash; 开启MyBatis支持延迟加载 &ndash;&gt;-->
+    <!--        <setting name="lazyLoadingEnabled" value="true"/>-->
+    <!--        &lt;!&ndash; 将积极加载改为消息加载，即按需加载 &ndash;&gt;-->
+    <!--        <setting name="aggressiveLazyLoading" value="false"/>-->
+    <!--        &lt;!&ndash; 开启二级缓存支持，默认为true，不配置也行 &ndash;&gt;-->
+    <!--        <setting name="cacheEnable" value="true"/>-->
+    <!--    </settings>-->
+
+    <!--
+        引入外部数据库配置信息
+            resource属性：指定配置文件的位置，是按照类路径的写法来写，并且必须存在于类路径下
+            url属性：是按照按照Url的写法来写
+    -->
+    <properties resource="jdbcConfig.properties"/>
+
+    <typeAliases>
+        <!-- package，上面使用typeAlias标签一个个去配，很麻烦，而package标签可以指定一个包，为包里的所有实体都配置别名，不再区分大小写 -->
+        <package name="com.itheima.domain"/>
+    </typeAliases>
+
+    <!-- 配置环境 -->
+    <environments default="mysql">
+        <!-- MySql环境 -->
+        <environment id="mysql">
+            <!-- 配置事务的类型 -->
+            <transactionManager type="JDBC"/>
+            <!--
+                配置数据源（连接池）
+                    种类：
+                        1.POOLED，采用传统的javax.sql.DataSource规范中的连接池，mybatis中有针对规范的实现
+                        2.UNPOOLED，采用传统获取连接的概念，虽然也实现了javax.sql.DataSource接口，但没有池的概念，所以每次获取连接都是新的，并没有复用
+                        3.JNDI，采用服务器提供的JNDI技术实现，不同的服务器，获取到的实现都不一样
+                            注意：如果不是web工程或maven工程，是不能使用的！
+                            项目中使用的是Tomcat服务器，采用的连接池就是dbcp连接池
+            -->
+            <dataSource type="POOLED">
+                <!-- 配置连接数据库的4个基本信息 -->
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--
+    指定映射配置文件的位置，映射配置指的是每个dao独立的配置文件
+        注意如果使用注解方式，对应的xml不能存在，否则会报错
+    -->
+    <mappers>
+        <!-- package属性，用于指定Dao层接口所在的包，当指定了之后，就不需要再写上面的mapper标签和resource或class属性 -->
+        <package name="com.itheima.dao"/>
+    </mappers>
+</configuration>
