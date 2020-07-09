@@ -13,7 +13,6 @@ public interface IUserDao {
     /**
      * 查询所有用户，同时获取到用户下的所有账户信息
      */
-//    @Select("select * from user")
     List<User> findAll();
 
     /**

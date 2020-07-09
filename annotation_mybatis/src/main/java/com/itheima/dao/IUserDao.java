@@ -10,7 +10,7 @@ import java.util.List;
  * MyBatis注解练习
  * 注解一共有4个：
  * 1.@Select
- * 2.@Inser
+ * 2.@Insert
  * 3.@Update
  * 4.@Delete
  */
@@ -21,7 +21,7 @@ public interface IUserDao {
      * 查询所有
      */
     @Select("select * from user")
-    //如果实体和数据库字段不同，则可以使用@Results注解，配置映射关系，column为数据库字段，property为实体字段
+    //如果实体和数据库字段不同，则可以使用@Results注解，配置映射关系，column属性为数据库字段，property属性为实体字段
     @Results(id = "userMap", value = {
             @Result(
                     id = true,
@@ -46,7 +46,9 @@ public interface IUserDao {
             ),
             //配置一对多的关联
             @Result(
+                    //column为调用AccountDao层方法传递的参数
                     column = "id",
+                    //property为封装到实体的字段的名称
                     property = "accounts",
                     many = @Many(
                             select = "com.itheima.dao.IAccountDao.findAccountByUid",

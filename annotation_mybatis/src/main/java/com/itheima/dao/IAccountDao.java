@@ -30,9 +30,10 @@ public interface IAccountDao {
             ),
             //配置一对一的关联
             @Result(
-                    property = "user",
                     //column为调用User的单表查询时传的参数
                     column = "uid",
+                    //property为封装到实体的字段的名称
+                    property = "user",
                     one = @One(
                             //select为去单表查询的方法
                             select = "com.itheima.dao.IUserDao.findById",

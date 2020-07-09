@@ -45,7 +45,7 @@
             ofType属性：指定集合中的元素的类型
         -->
         <collection property="accounts" ofType="account" select="com.itheima.dao.IAccountDao.findAccountByUid"
-                    column="id"/>
+                    column="id" fetchType="lazy"/>
     </resultMap>
 
     <!-- 定义用户和角色的映射 -->
